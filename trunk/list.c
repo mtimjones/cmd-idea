@@ -1,7 +1,19 @@
 // list.c -- list helper functions.
 //
 
+#include <stdio.h>
+#include <assert.h>
 #include "list.h"
+
+void listInit( linked_list_t* list )
+{
+  assert(list);
+
+  list->first = list->last = NULL;
+
+  return;
+}
+
 
 void listAdd( linked_list_t* list, link_t* item )
 {
@@ -13,9 +25,9 @@ void listAdd( linked_list_t* list, link_t* item )
   if (list->last)
   {
     // Non-empty list, item added to the tail
-    list->last->next = item;
-    item->prev = list->last;
-    list->last = item;
+    ((link_t *)list->last)->next = item;
+    item->prev = (link_t *)list->last;
+    list->last = (link_t *)item;
   }
   else
   {
@@ -35,7 +47,7 @@ void iterateList( linked_list_t* list, void* callback )
   assert(list);
 
   for (link = list->first ; link ; link = link->next) {
-    callback( (link_t*)link );
+//    callback( (link_t*)link );
   }
 
   return;
