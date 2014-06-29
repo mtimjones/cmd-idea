@@ -11,8 +11,9 @@
 typedef linked_list_t ideas_t;
 
 typedef struct idea {
-  link_t* link;
+  link_t link;
   char* text;
+  unsigned int identifier;
 } idea;
 
 void execInterpreter( ideas_t* );
