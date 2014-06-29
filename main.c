@@ -4,7 +4,14 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include "ideadb.h"
+
+int verbose = 0;
+
+ideas_t ideas;
 
 void displayHelp( void )
 {
@@ -14,24 +21,54 @@ void displayHelp( void )
 int main ( int argc, char* argv[] )
 {
    int c;
-   char *home_dir;
+   char *db_dir;
 
-   home_dir = getenv( "HOME" );
+   db_dir = getenv( "HOME" );
 
-   printf( "home directory %s\n", home_dir );
-
-   while (( c = getopt( argc, argv, "h")) != -1 )
+   while (( c = getopt( argc, argv, "hvd:")) != -1 )
    {
       switch( c )
       {
+         case 'v':
+            verbose = 1;
+            break;
          case 'h':
             displayHelp( );
             return 0;
+         case 'd':
+            {
+               DIR* dir = opendir( optarg );
+               if ( dir )
+               {
+                  db_dir = optarg;
+                  closedir( dir );
+               }
+               else if ( errno == ENOENT )
+               {
+                 printf("Specified subdirectory does not exist.\n");
+                 return 0;
+               }
+            }
+            break;
          default:
             printf( "Unknown option %c\n", (char)c );
-
+            break;
       }
    }
+
+   if (verbose)
+   {
+      printf("Using directory %s\n", db_dir);
+   }
+
+   listInit( &ideas );
+
+   // Try to read the idea database into the list
+//   readDatabase( &ideas, db_dir );
+
+   execInterpreter( &ideas );
+
+//   storeDatabase( &ideas, db_dir );
 
    return 0;
 }
