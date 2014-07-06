@@ -63,6 +63,8 @@ void addCommand( ideas_t* ideas, char *input )
       listAdd( ideas, (link_t *)cur_idea );
    }
 
+   printf("\n");
+
    return;
 }
 
@@ -76,6 +78,8 @@ void listCommand( ideas_t* ideas )
       link = link->next;
    }
 
+   printf("\n");
+
    return;
 }
 
@@ -83,9 +87,13 @@ void listCommand( ideas_t* ideas )
 void commonCommandCallback( link_t* link )
 {
    char *token;
-   const char *delim=".,-; ";
+   const char *delim=".,-; {}()!@#$%^&*";
+   char *copy;
 
-   token = strtok( ((idea *)link)->text, delim );
+   copy = (char *)malloc( strlen( ((idea *)link)->text ) + 1 );
+   strcpy ( copy, ((idea *)link)->text );
+
+   token = strtok( copy, delim );
 
    while ( token != NULL )
    {
@@ -93,6 +101,8 @@ void commonCommandCallback( link_t* link )
 
       token = strtok( NULL, delim );
    }
+
+   free( copy );
 
    return;
 }
