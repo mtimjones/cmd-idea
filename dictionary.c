@@ -122,7 +122,7 @@ void printDictionary( int num )
 void createDictionaryFromText( char* text )
 {
    char *token;
-   const char *delim=".,; {}()!@#$%^&*";
+   const char *delim=".,;? {}()!@#$%^&*";
    char *copy;
 
    copy = (char *)malloc( strlen( text ) + 1 );

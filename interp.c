@@ -102,6 +102,18 @@ void commonCommand( ideas_t* ideas )
 }
 
 
+void organizeCommand( ideas_t* ideas )
+{
+   initDictionary( );
+
+   listIterate( ideas, insertIdeaIntoDictionary );
+
+   printDictionary( 100 );
+
+   return;
+}
+
+
 void execInterpreter( ideas_t* ideas )
 {
    char *input, shell_prompt[6];
@@ -133,6 +145,10 @@ void execInterpreter( ideas_t* ideas )
       else if ( !strncmp( input, "common", 6 ) )
       {
          commonCommand( ideas );
+      }
+      else if ( !strncmp( input, "organize", 8 ) )
+      {
+         organizeCommand( ideas );
       }
       else if ( !strncmp( input, "exit", 4 ) )
       {
