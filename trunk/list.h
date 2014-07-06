@@ -14,7 +14,10 @@ typedef struct linked_list_t {
   link_t* last;
 } linked_list_t;
 
+typedef void (*iter_callback_t)( link_t * link );
+
 void listInit( linked_list_t* list );
 void listAdd( linked_list_t* list, link_t* item );
+void listIterate( linked_list_t* list, iter_callback_t callback );
 
 #endif // __LIST_H__
