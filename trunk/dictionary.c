@@ -2,8 +2,10 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include "dictionary.h"
+#include "utils.h"
 
 #define MAX_WORDS	1000
 
@@ -116,3 +118,27 @@ void printDictionary( int num )
    return;
 }
 
+
+void createDictionaryFromText( char* text )
+{
+   char *token;
+   const char *delim=".,; {}()!@#$%^&*";
+   char *copy;
+
+   copy = (char *)malloc( strlen( text ) + 1 );
+   strcpy ( copy, text );
+   convertToLowercase( copy );
+
+   token = strtok( copy, delim );
+
+   while ( token != NULL )
+   {
+      addWordToDictionary( token );
+
+      token = strtok( NULL, delim );
+   }
+
+   free( copy );
+
+   return;
+}

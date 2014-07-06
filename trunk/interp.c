@@ -39,8 +39,6 @@ void addCommand( ideas_t* ideas, char *input )
 
    while ( *idea_text == ' ' ) idea_text++;
 
-   printf("Length %d, Idea: %s\n", strlen( idea_text ), idea_text );
-
    if ( strlen( idea_text ) > 0 )
    {
       idea* cur_idea;
@@ -74,7 +72,7 @@ void listCommand( ideas_t* ideas )
    link_t* link = ideas->first;
    while (link)
    {
-      printf("%s: %s\n", ((idea *)link)->addedDate, ((idea *)link)->text);
+      printf("%4d: %s\n", ((idea *)link)->identifier, ((idea *)link)->text);
       link = link->next;
    }
 
@@ -84,27 +82,9 @@ void listCommand( ideas_t* ideas )
 }
 
 
-void commonCommandCallback( link_t* link )
+void insertIdeaIntoDictionary( link_t* link )
 {
-   char *token;
-   const char *delim=".,-; {}()!@#$%^&*";
-   char *copy;
-
-   copy = (char *)malloc( strlen( ((idea *)link)->text ) + 1 );
-   strcpy ( copy, ((idea *)link)->text );
-
-   token = strtok( copy, delim );
-
-   while ( token != NULL )
-   {
-      addWordToDictionary( token );
-
-      token = strtok( NULL, delim );
-   }
-
-   free( copy );
-
-   return;
+   createDictionaryFromText( ((idea *)link)->text );
 }
 
 
@@ -112,7 +92,7 @@ void commonCommand( ideas_t* ideas )
 {
    initDictionary( );
 
-   listIterate( ideas, commonCommandCallback );
+   listIterate( ideas, insertIdeaIntoDictionary );
 
    sortDictionary( );
 

@@ -1,6 +1,10 @@
 // utils.c
 //
 
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
 unsigned int isCommonWord( char *word )
 {
    const char *commonWords = 
@@ -15,3 +19,20 @@ unsigned int isCommonWord( char *word )
    return 0;
 
 }
+
+
+void convertToLowercase( char *string )
+{
+   int i;
+
+   for ( i = 0 ; i < strlen( string ) ; i++ )
+   {
+      if ( isupper( string[i] ) )
+      {
+         string[i] = tolower( string[i] );
+      }
+   }
+
+   return;
+}
+
