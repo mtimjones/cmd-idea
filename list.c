@@ -7,49 +7,49 @@
 
 void listInit( linked_list_t* list )
 {
-  assert(list);
+   assert(list);
 
-  list->first = list->last = NULL;
+   list->first = list->last = NULL;
 
-  return;
+   return;
 }
 
 
 void listAdd( linked_list_t* list, link_t* item )
 {
-  assert(list);
-  assert(item);
+   assert(list);
+   assert(item);
 
-  item->next = item->prev = NULL;
+   item->next = item->prev = NULL;
 
-  if (list->last)
-  {
-    // Non-empty list, item added to the tail
-    ((link_t *)list->last)->next = item;
-    item->prev = (link_t *)list->last;
-    list->last = (link_t *)item;
-  }
-  else
-  {
-    // Empty list, single item added
-    list->first = item;
-    list->last = item;
-  }
+   if (list->last)
+   {
+     // Non-empty list, item added to the tail
+     ((link_t *)list->last)->next = item;
+     item->prev = (link_t *)list->last;
+     list->last = (link_t *)item;
+   }
+   else
+   {
+     // Empty list, single item added
+     list->first = item;
+     list->last = item;
+   }
 
-  return;
+   return;
 }
 
 
-void iterateList( linked_list_t* list, void* callback )
+void listIterate( linked_list_t* list, iter_callback_t callback )
 {
-  link_t* link;
+   link_t* link;
 
-  assert(list);
+   assert(list);
 
-  for (link = list->first ; link ; link = link->next) {
-//    callback( (link_t*)link );
-  }
+   for (link = list->first ; link ; link = link->next) {
+     callback( (link_t*)link );
+   }
 
-  return;
+   return;
 }
 

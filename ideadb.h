@@ -5,6 +5,7 @@
 #define __IDEADB_H__
 
 #include "list.h"
+#include "time.h"
 
 #define IDEA_DB_FILE ".ideadb"
 
@@ -14,6 +15,8 @@ typedef struct idea {
   link_t link;
   char* text;
   unsigned int identifier;
+  char* addedDate;
+  int   cluster;
 } idea;
 
 void execInterpreter( ideas_t* );
