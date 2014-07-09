@@ -18,6 +18,7 @@ void addWordToDictionary( char *word );
 int findWordInDictionary( char *word );
 void sortDictionary( void );
 void printDictionary( int num );
+void printDictionaryTopics( int num );
 void createDictionaryFromText( char* text );
 
 #endif /* __DICTIONARY_H__ */

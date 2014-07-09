@@ -5,6 +5,7 @@
 #define UTILS_H__
 
 // Utility functions
+unsigned int isCommonWord( char *word );
 void convertToLowercase( char * );
 
 #endif // UTILS_H__

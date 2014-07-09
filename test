@@ -1,11 +1,28 @@
-add This is a new idea.
-add How about an idea on big-data.
-add This is an old idea.
-add this is an insane idea.
+add Extract all of the UFC data and perform some data science on it.
+add Build a CLI for a non-CLI service (browser, or something else).
+add Design a simple functional language to better understand that paradigm.
+add Build reduced RPG / tower defense game in JavaScript (button only)
+add Top-down adventure RPG using curses/character graphics.
+add An artificial life simulation of some type.  Perhaps a city ecosystem.
+add Genetic Programming Experiment - pick a real instruction set such as PIC to simulate.
+add Design a simple esoteric language from scratch that is turing complete..
+add Procedurally generated 2D map with user-defined constraints.
+add Quantified Self - mine social media data to identify patterns and behavior.
+add Probabilistic Neural Networks -- instead of weights, probabilities.  What would happen?
 list
-common
-add and finally, this is just a bad idea.
-add will this idea be the big one?
-add what about this idea?  Could it hunt?
+topics
+add Security project -- look for ideas.
+add Build an Immunity-based system for feature detection.
+add Scientific Discovery Processes to search for simple knowledge. 
+add NPC AI Architecture.  Artificial environment with bots, novel behavior.
+add Implement some other firmware architectures (coroutines, etc.).
+add Work on a text-mining application.
+add Build a key/value store to better understand this type of architecture.
+add Build something with Godot game engine.
+add Build something with Unity3D.
+add Self-organizing Filesystem to explore ideas in this domain.
+add Reuseable AI for common applications (such as a library).
+add Online people search (makes use of APIs for constructing people/company graphs).
+add NPC AI -- library for developing rational NPCs in games.
 list
-common
+topics
