@@ -7,9 +7,12 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #include "ideadb.h"
 
 int verbose = 0;
+int term_width;
 
 ideas_t ideas;
 
@@ -22,6 +25,10 @@ int main ( int argc, char* argv[] )
 {
    int c;
    char *db_dir;
+   struct winsize w;
+
+   ioctl( STDOUT_FILENO, TIOCGWINSZ, &w );
+   term_width = w.ws_col;
 
    db_dir = getenv( "HOME" );
 

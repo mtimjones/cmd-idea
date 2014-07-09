@@ -7,7 +7,7 @@
 #include "dictionary.h"
 #include "utils.h"
 
-#define MAX_WORDS	1000
+#define MAX_WORDS	2000
 
 d_entry dictionary[ MAX_WORDS ];
 int     last_entry;
@@ -111,7 +111,7 @@ void printDictionary( int num )
 
    for ( i = 0 ; i < max ; i++ )
    {
-      printf("%id03d (%03d): %s\n", i, dictionary[i].count, dictionary[i].word );
+      printf("%03d (%03d): %s\n", i, dictionary[i].count, dictionary[i].word );
    }
    printf("\n");
 
@@ -127,7 +127,7 @@ void printDictionaryTopics( int num )
    {
       if ( dictionary[i].count < 2 ) break;
       if ( isCommonWord( dictionary[i].word ) ) continue;
-      printf("%02d (%03d): %s\n", i, dictionary[i].count, dictionary[i].word );
+      printf("%03d (%03d): %s\n", i, dictionary[i].count, dictionary[i].word );
       if ( num-- == 0 ) break;
    }
    printf("\n");
