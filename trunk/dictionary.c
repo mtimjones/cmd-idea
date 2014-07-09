@@ -111,7 +111,24 @@ void printDictionary( int num )
 
    for ( i = 0 ; i < max ; i++ )
    {
+      printf("%id03d (%03d): %s\n", i, dictionary[i].count, dictionary[i].word );
+   }
+   printf("\n");
+
+   return;
+}
+
+
+void printDictionaryTopics( int num )
+{
+   int i;
+
+   for ( i = 0 ; i < last_entry ; i++ )
+   {
+      if ( dictionary[i].count < 2 ) break;
+      if ( isCommonWord( dictionary[i].word ) ) continue;
       printf("%02d (%03d): %s\n", i, dictionary[i].count, dictionary[i].word );
+      if ( num-- == 0 ) break;
    }
    printf("\n");
 
@@ -122,7 +139,7 @@ void printDictionary( int num )
 void createDictionaryFromText( char* text )
 {
    char *token;
-   const char *delim=".,;? {}()!@#$%^&*";
+   const char *delim="/.,;-? {}()!@#$%^&*";
    char *copy;
 
    copy = (char *)malloc( strlen( text ) + 1 );

@@ -24,7 +24,7 @@ void helpCommand( void )
    printf("organize        Organize the ideas into clusters\n");
    printf("similar <id>    List similar ideas to defined idea\n");
    printf("search <words>  List ideas that contain the defined words\n");
-   printf("common          Identify the top 10 most common words\n");
+   printf("topics          Identify the top 10 most common topics\n");
    printf("help            Show this help menu\n");
    
    printf("exit            Exit the application\n");
@@ -88,7 +88,7 @@ void insertIdeaIntoDictionary( link_t* link )
 }
 
 
-void commonCommand( ideas_t* ideas )
+void topicsCommand( ideas_t* ideas )
 {
    initDictionary( );
 
@@ -96,7 +96,7 @@ void commonCommand( ideas_t* ideas )
 
    sortDictionary( );
 
-   printDictionary( 10 );
+   printDictionaryTopics( 10 );
 
    return;
 }
@@ -108,7 +108,7 @@ void organizeCommand( ideas_t* ideas )
 
    listIterate( ideas, insertIdeaIntoDictionary );
 
-   printDictionary( 100 );
+   printDictionary( 500 );
 
    return;
 }
@@ -119,7 +119,7 @@ void execInterpreter( ideas_t* ideas )
    char *input, shell_prompt[6];
    int  running = 1;
 
-   snprintf( shell_prompt, sizeof(shell_prompt), "idea>" );
+   snprintf( shell_prompt, sizeof(shell_prompt), "idea> " );
 
    while ( running )
    {
@@ -142,9 +142,9 @@ void execInterpreter( ideas_t* ideas )
       {
          listCommand( ideas );
       }
-      else if ( !strncmp( input, "common", 6 ) )
+      else if ( !strncmp( input, "topics", 6 ) )
       {
-         commonCommand( ideas );
+         topicsCommand( ideas );
       }
       else if ( !strncmp( input, "organize", 8 ) )
       {
