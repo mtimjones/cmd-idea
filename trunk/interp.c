@@ -3,12 +3,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
 #include "ideadb.h"
 #include "list.h"
+#include "utils.h"
 #include "dictionary.h"
 
 int last_identifier = 0;
@@ -32,6 +34,52 @@ void helpCommand( void )
    return;
 }
 
+
+void searchCommand( ideas_t* ideas, char* input )
+{
+   char terms[10][40];
+   int num_terms = 0;
+   char cmd_line[256];
+   char *token;
+   char *delim = " ,";
+
+   /* Grab the search terms */
+   strcpy( cmd_line, &input[7] );
+
+   token = strtok( cmd_line, delim );
+   
+   while ( token != NULL )
+   {
+      strcpy( terms[num_terms], token );
+      num_terms++;
+      token = strtok( NULL, delim );
+   }
+
+   
+   if ( num_terms > 0 )
+   {
+      link_t* link = ideas->first;
+      int i;
+
+      while (link)
+      {
+         for ( i = 0 ; i < num_terms ; i++ )
+         {
+            if ( strstr( (const char *)((idea *)link)->text, terms[i] ) == 0 ) break;
+         }
+
+         if ( i == num_terms )
+         {
+            printf( "%4d: %s\n", ((idea *)link)->identifier, 
+                                 ((idea *)link)->text );
+         }
+
+         link = link->next;
+      }
+   }
+
+   return;
+}
 
 void addCommand( ideas_t* ideas, char *input )
 {
@@ -149,6 +197,10 @@ void execInterpreter( ideas_t* ideas )
       else if ( !strncmp( input, "organize", 8 ) )
       {
          organizeCommand( ideas );
+      }
+      else if ( !strncmp( input, "search", 5 ) )
+      {
+         searchCommand( ideas, input );
       }
       else if ( !strncmp( input, "exit", 4 ) )
       {
