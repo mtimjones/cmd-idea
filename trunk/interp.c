@@ -162,7 +162,7 @@ void createBoWVector( link_t* link )
 
    ideap->BoWVector = (unsigned char *)calloc( 1, dictionarySize() );
 
-   // 
+   createVectorFromText( ideap->BoWVector, ideap->text );
 
    return;
 }
