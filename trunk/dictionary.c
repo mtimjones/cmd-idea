@@ -159,3 +159,10 @@ void createDictionaryFromText( char* text )
 
    return;
 }
+
+
+int dictionarySize( void )
+{
+   return last_entry;
+}
+
