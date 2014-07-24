@@ -55,7 +55,6 @@ void searchCommand( ideas_t* ideas, char* input )
       token = strtok( NULL, delim );
    }
 
-   
    if ( num_terms > 0 )
    {
       link_t* link = ideas->first;
@@ -81,6 +80,7 @@ void searchCommand( ideas_t* ideas, char* input )
    return;
 }
 
+
 void addCommand( ideas_t* ideas, char *input )
 {
    char *idea_text = &input[3];
@@ -105,6 +105,8 @@ void addCommand( ideas_t* ideas, char *input )
       cur_idea->addedDate = (char *)malloc( strlen( date ) + 1 );
       strcpy( cur_idea->addedDate, date );
       cur_idea->addedDate[ strlen(cur_idea->addedDate)-1 ] = 0;
+
+      cur_idea->BoWVector = (unsigned char *)0;
 
       listAdd( ideas, (link_t *)cur_idea );
    }
@@ -150,13 +152,33 @@ void topicsCommand( ideas_t* ideas )
 }
 
 
+void createBoWVector( link_t* link )
+{
+   idea *ideap;
+
+   ideap = (idea *)link;
+
+   if (ideap->BoWVector) free( ideap->BoWVector );
+
+   ideap->BoWVector = (unsigned char *)calloc( 1, dictionarySize() );
+
+   // 
+
+   return;
+}
+
+
 void organizeCommand( ideas_t* ideas )
 {
    initDictionary( );
 
+   /* Create the dictionary */
    listIterate( ideas, insertIdeaIntoDictionary );
 
-   printDictionary( 500 );
+   /* Allocate and populate the BoW vectors. */
+   listIterate( ideas, createBoWVector );
+
+   printf( "Size of dictionary is %d\n", dictionarySize() );
 
    return;
 }

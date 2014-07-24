@@ -13,10 +13,11 @@ typedef linked_list_t ideas_t;
 
 typedef struct idea {
   link_t link;
-  char* text;
+  char*  text;
   unsigned int identifier;
-  char* addedDate;
-  int   cluster;
+  char*  addedDate;
+  int    cluster;
+  unsigned char* BoWVector;
 } idea;
 
 void execInterpreter( ideas_t* );
