@@ -12,6 +12,8 @@
 d_entry dictionary[ MAX_WORDS ];
 int     last_entry;
 
+static const char *delim="/.,;-? {}()!@#$%^&*";
+
 void initDictionary( void )
 {
    int i;
@@ -139,7 +141,6 @@ void printDictionaryTopics( int num )
 void createDictionaryFromText( char* text )
 {
    char *token;
-   const char *delim="/.,;-? {}()!@#$%^&*";
    char *copy;
 
    copy = (char *)malloc( strlen( text ) + 1 );
@@ -164,5 +165,35 @@ void createDictionaryFromText( char* text )
 int dictionarySize( void )
 {
    return last_entry;
+}
+
+
+void createVectorFromText( unsigned char *vector, char *text )
+{
+   char *token;
+   char *copy;
+   int  index;
+
+   assert( vector );
+   assert( text );
+
+   copy = (char *)malloc( strlen( text ) + 1 );
+   strcpy ( copy, text );
+   convertToLowercase( copy );
+
+   token = strtok( copy, delim );
+
+   while ( token != NULL )
+   {
+      index = findWordInDictionary( token );
+
+      vector[ index ]++;
+
+      token = strtok( NULL, delim );
+   }
+
+   free( copy );
+
+   return;
 }
 

@@ -21,5 +21,6 @@ void printDictionary( int num );
 void printDictionaryTopics( int num );
 void createDictionaryFromText( char* text );
 int  dictionarySize( void );
+void createVectorFromText( unsigned char *vector, char *text );
 
 #endif /* __DICTIONARY_H__ */
