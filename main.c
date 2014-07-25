@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <time.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/ioctl.h>
@@ -67,6 +68,8 @@ int main ( int argc, char* argv[] )
    {
       printf("Using directory %s\n", db_dir);
    }
+
+   srand( time( NULL ) );
 
    listInit( &ideas );
 

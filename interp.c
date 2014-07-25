@@ -12,6 +12,7 @@
 #include "list.h"
 #include "utils.h"
 #include "dictionary.h"
+#include "cluster.h"
 
 int last_identifier = 0;
 
@@ -23,7 +24,7 @@ void helpCommand( void )
    printf("add <string>    Add a new idea to the database\n");
    printf("del <id>        Delete an idea from the database\n");
    printf("list            List all ideas in the database\n");
-   printf("organize        Organize the ideas into clusters\n");
+   printf("organize <k>    Organize the ideas into <k> clusters\n");
    printf("similar <id>    List similar ideas to defined idea\n");
    printf("search <words>  List ideas that contain the defined words\n");
    printf("topics          Identify the top 10 most common topics\n");
@@ -164,12 +165,20 @@ void createBoWVector( link_t* link )
 
    createVectorFromText( ideap->BoWVector, ideap->text );
 
+   ideap->cluster = -1;
+
    return;
 }
 
 
-void organizeCommand( ideas_t* ideas )
+void organizeCommand( ideas_t* ideas, char* input )
 {
+   int k;
+
+   sscanf( input, "organize %d", &k );
+
+   if ((k < 3) || (k > 20)) k = 3;
+
    initDictionary( );
 
    /* Create the dictionary */
@@ -178,7 +187,10 @@ void organizeCommand( ideas_t* ideas )
    /* Allocate and populate the BoW vectors. */
    listIterate( ideas, createBoWVector );
 
-   printf( "Size of dictionary is %d\n", dictionarySize() );
+printf("k = %d\n", k );
+
+   /* Cluster the ideas */
+   kmeans( ideas, k );
 
    return;
 }
@@ -218,7 +230,8 @@ void execInterpreter( ideas_t* ideas )
       }
       else if ( !strncmp( input, "organize", 8 ) )
       {
-         organizeCommand( ideas );
+         if ( dictionarySize() < 10) printf("Sample too small.\n\n");
+         else organizeCommand( ideas, input );
       }
       else if ( !strncmp( input, "search", 5 ) )
       {
