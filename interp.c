@@ -118,14 +118,34 @@ void addCommand( ideas_t* ideas, char *input )
 
 void listCommand( ideas_t* ideas )
 {
-   link_t* link = ideas->first;
-   while (link)
+   link_t* link;
+   int cur, target;
+
+   cur = 0;
+   target = 1;
+
+   while ( cur < target )
    {
-      printf("%4d: (%4d) %s\n", 
-            ((idea *)link)->identifier, 
-            ((idea *)link)->cluster, 
-            ((idea *)link)->text);
-      link = link->next;
+      link = ideas->first;
+      while (link)
+      {
+         if ( ((idea *)link)->cluster == cur)
+         {
+            printf("%4d: (%4d) %s\n", 
+                  ((idea *)link)->identifier, 
+                  ((idea *)link)->cluster, 
+                  ((idea *)link)->text);
+         }
+         else
+         {
+            if ( ((idea *)link)->cluster >= target )
+            {
+               target = ((idea *)link)->cluster + 1;
+            }
+         }
+         link = link->next;
+      }
+      cur++;
    }
 
    printf("\n");
@@ -231,7 +251,7 @@ void execInterpreter( ideas_t* ideas )
       }
       else if ( !strncmp( input, "organize", 8 ) )
       {
-         if ( dictionarySize() < 10) printf("Sample too small.\n\n");
+         if ( dictionarySize() < 5) printf("Sample too small.\n\n");
          else organizeCommand( ideas, input );
       }
       else if ( !strncmp( input, "search", 5 ) )

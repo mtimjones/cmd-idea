@@ -10,6 +10,8 @@
 double *centroids[MAX_K];
 int centroid_counts[MAX_K];
 
+extern int verbose;
+
 void assignRandomIdeaToCluster( ideas_t* ideas, int k, int c )
 {
    int index, cur, i;
@@ -30,7 +32,7 @@ void assignRandomIdeaToCluster( ideas_t* ideas, int k, int c )
             if ( ((idea *)link)->cluster == -1 )
             {
                ((idea *)link)->cluster = k;
-               printf( "Cluster %d, starts with idea %d\n", k, index );
+               if (verbose) printf( "Cluster %d, starts with idea %d\n", k, index );
                for ( i = 0 ; i < c ; i++ )
                {
                   centroids[k][i] = (double)((idea *)link)->BoWVector[i];
@@ -96,7 +98,7 @@ void kmeansDetermineMembership( idea* idea, int k, int c )
          distance += pow( ((double)idea->BoWVector[j] - centroids[i][j] ), 2 );
       }
 
-      printf("   Cluster %d distance %g\n", i, distance );
+      if (verbose) printf("   Cluster %d distance %g\n", i, distance );
 
       if ( distance < min_distance )
       {
@@ -149,13 +151,13 @@ void recomputeCentroids( ideas_t* ideas, int k, int c )
    // Update the Centroids based upon its members
    for ( i = 0 ; i < k ; i++ )
    {
-      printf(" Centroid %d: ", i);
+      if (verbose) printf(" Centroid %d: ", i);
       for ( j = 0 ; j < c ; j++ )
       {
          centroids[i][j] /= (float)centroid_counts[i];
-         printf( "%g ", centroids[i][j] );
+         if (verbose) printf( "%g ", centroids[i][j] );
       }
-      printf("\n");
+      if (verbose) printf("\n");
    }
 
    return;
@@ -165,7 +167,7 @@ void recomputeCentroids( ideas_t* ideas, int k, int c )
 void kmeans_iterate( ideas_t* ideas, int k, int c )
 {
    link_t* link;
-   int iterations = 80;
+   int iterations = 200;
 
    do {
 
@@ -174,7 +176,7 @@ void kmeans_iterate( ideas_t* ideas, int k, int c )
       // Assign members to centroids
       while ( link )
       {
-         printf("Checking %d\n", ((idea*)link)->identifier );
+         if (verbose) printf("Checking %d\n", ((idea*)link)->identifier );
 
          kmeansDetermineMembership( (idea*)link, k, c );
 
@@ -191,7 +193,7 @@ void kmeans_iterate( ideas_t* ideas, int k, int c )
 
 void kmeans( ideas_t* ideas, int k, int c )
 {
-   printf("k %d, c %d\n", k, c );
+   if (verbose) printf("k %d, c %d\n", k, c );
 
    // Create Cluster initial members
    kmeans_cluster_init( ideas, k, c );
