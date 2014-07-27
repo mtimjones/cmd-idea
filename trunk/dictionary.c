@@ -7,12 +7,12 @@
 #include "dictionary.h"
 #include "utils.h"
 
-#define MAX_WORDS	2000
+#define MAX_WORDS	4000
 
 d_entry dictionary[ MAX_WORDS ];
 int     last_entry;
 
-static const char *delim="/.,;-? {}()!@#$%^&*";
+static const char *delim="/.,;-? \"\'{}()!@#$%^&*";
 
 void initDictionary( void )
 {
