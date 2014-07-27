@@ -1,17 +1,18 @@
 // cluster.c
 // Simple implementation of k-means clustering.
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <float.h>
+#include <math.h>
+#include <assert.h>
 #include "ideadb.h"
 #include "dictionary.h"
 
-#define getSRand()      ((float)rand() / (float)RAND_MAX)
-#define getRand(x)      (int)((x) * getSRand())
+double *centroids[MAX_K];
+int centroid_counts[MAX_K];
 
-void assignRandomIdeaToCluster( ideas_t* ideas, int c )
+void assignRandomIdeaToCluster( ideas_t* ideas, int k, int c )
 {
-   int index, cur;
+   int index, cur, i;
    link_t* link;
 
    extern int last_identifier;
@@ -28,8 +29,12 @@ void assignRandomIdeaToCluster( ideas_t* ideas, int c )
          {
             if ( ((idea *)link)->cluster == -1 )
             {
-               ((idea *)link)->cluster = c;
-               printf( "Cluster %d, starts with idea %d\n", c, index );
+               ((idea *)link)->cluster = k;
+               printf( "Cluster %d, starts with idea %d\n", k, index );
+               for ( i = 0 ; i < c ; i++ )
+               {
+                  centroids[k][i] = (double)((idea *)link)->BoWVector[i];
+               }
                return;
             }
          }
@@ -43,26 +48,157 @@ void assignRandomIdeaToCluster( ideas_t* ideas, int c )
 }
 
 
-void kmeans_cluster_init( ideas_t* ideas, int k )
+void kmeans_cluster_init( ideas_t* ideas, int k, int c )
 {
-   int c;
+   int i;
 
-   for ( c = 0 ; c < k ; c++ )
+   assert( ideas );
+
+   for (i = 0 ; i < k ; i++ )
    {
-      assignRandomIdeaToCluster( ideas, c );
+      centroids[i] = (double *)calloc( 1, (c*sizeof(double)) );
+      centroid_counts[i] = 0;
+   }
+
+   for ( i = 0 ; i < k ; i++ )
+   {
+      assignRandomIdeaToCluster( ideas, i, c );
    }
 
    return;
 }
 
 
-void kmeans( ideas_t* ideas, int k )
+void kmeans_cluster_destroy( int k )
 {
+   int i;
+
+   for (i = 0 ; i < k ; i++ )
+   {
+      free( (void *)centroids[i] );
+   }
+
+   return;
+}
+
+
+void kmeansDetermineMembership( idea* idea, int k, int c )
+{
+   double min_distance = DBL_MAX;
+   int i, j;
+
+   for ( i = 0 ; i < k ; i++ )
+   {
+      double distance = 0;
+
+      for ( j = 0 ; j < c ; j++ )
+      {
+         distance += pow( ((double)idea->BoWVector[j] - centroids[i][j] ), 2 );
+      }
+
+      printf("   Cluster %d distance %g\n", i, distance );
+
+      if ( distance < min_distance )
+      {
+         idea->cluster = i;
+         min_distance = distance;
+      }
+
+   }
+
+   // Add the member to its cluster
+   for ( j = 0 ; j < c ; j++ )
+   {
+      centroids[idea->cluster][j] += (double) idea->BoWVector[j];
+   }
+
+   // Increment the cluster counter
+   centroid_counts[ idea->cluster ]++;
+
+   return;
+}
+
+
+void recomputeCentroids( ideas_t* ideas, int k, int c )
+{
+   int i, j;
+   link_t* link;
+
+   for ( i = 0 ; i < k ; i++ )
+   {
+      centroid_counts[ i ] = 0;
+      for ( j = 0 ; j < c ; j++ )
+      {
+         centroids[i][j] = 0.0;
+      }
+   }
+
+   link = ideas->first;
+   while ( link )
+   {
+      // Add the member to its cluster
+      for ( j = 0 ; j < c ; j++ )
+      {
+         centroids[((idea*)link)->cluster][j] += (double) ((idea *)link)->BoWVector[j];
+         centroid_counts[ ((idea*)link)->cluster ]++;
+      }
+
+      link = link->next;
+   }
+
+   // Update the Centroids based upon its members
+   for ( i = 0 ; i < k ; i++ )
+   {
+      printf(" Centroid %d: ", i);
+      for ( j = 0 ; j < c ; j++ )
+      {
+         centroids[i][j] /= (float)centroid_counts[i];
+         printf( "%g ", centroids[i][j] );
+      }
+      printf("\n");
+   }
+
+   return;
+}
+
+
+void kmeans_iterate( ideas_t* ideas, int k, int c )
+{
+   link_t* link;
+   int iterations = 80;
+
+   do {
+
+      link = ideas->first;
+
+      // Assign members to centroids
+      while ( link )
+      {
+         printf("Checking %d\n", ((idea*)link)->identifier );
+
+         kmeansDetermineMembership( (idea*)link, k, c );
+
+         link = link->next;
+      }
+
+      recomputeCentroids( ideas, k, c );
+
+   } while (iterations--);
+
+   return;
+}
+
+
+void kmeans( ideas_t* ideas, int k, int c )
+{
+   printf("k %d, c %d\n", k, c );
 
    // Create Cluster initial members
-   kmeans_cluster_init( ideas, k );
+   kmeans_cluster_init( ideas, k, c );
 
+   kmeans_iterate( ideas, k, c );
 
+   kmeans_cluster_destroy( k );
 
    return;
 }
