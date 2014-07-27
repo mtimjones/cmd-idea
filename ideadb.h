@@ -4,6 +4,9 @@
 #ifndef __IDEADB_H__
 #define __IDEADB_H__
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "list.h"
 #include "time.h"
 
@@ -21,5 +24,10 @@ typedef struct idea {
 } idea;
 
 void execInterpreter( ideas_t* );
+
+#define MAX_K	20
+
+#define getSRand()      ((float)rand() / (float)RAND_MAX)
+#define getRand(x)      (int)((x) * getSRand())
 
 #endif // __IDEADB_H__

@@ -1,8 +1,6 @@
 // interp.c
 //
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <readline/readline.h>
@@ -97,7 +95,7 @@ void addCommand( ideas_t* ideas, char *input )
       cur_idea = (idea *)calloc( 1, sizeof( idea ) );
 
       cur_idea->text = (char *)malloc( strlen( idea_text ) + 1 );
-      strncpy( cur_idea->text, idea_text, strlen( idea_text ) );
+      strncpy( cur_idea->text, idea_text, strlen( idea_text )+1 );
 
       cur_idea->identifier = last_identifier++;
 
@@ -123,7 +121,10 @@ void listCommand( ideas_t* ideas )
    link_t* link = ideas->first;
    while (link)
    {
-      printf("%4d: %s\n", ((idea *)link)->identifier, ((idea *)link)->text);
+      printf("%4d: (%4d) %s\n", 
+            ((idea *)link)->identifier, 
+            ((idea *)link)->cluster, 
+            ((idea *)link)->text);
       link = link->next;
    }
 
@@ -177,7 +178,7 @@ void organizeCommand( ideas_t* ideas, char* input )
 
    sscanf( input, "organize %d", &k );
 
-   if ((k < 3) || (k > 20)) k = 3;
+   if ((k < 3) || (k > MAX_K)) k = 3;
 
    initDictionary( );
 
@@ -190,7 +191,7 @@ void organizeCommand( ideas_t* ideas, char* input )
 printf("k = %d\n", k );
 
    /* Cluster the ideas */
-   kmeans( ideas, k );
+   kmeans( ideas, k, dictionarySize() );
 
    return;
 }

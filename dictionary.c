@@ -151,7 +151,7 @@ void createDictionaryFromText( char* text )
 
    while ( token != NULL )
    {
-      addWordToDictionary( token );
+      if ( !isCommonWord( token ) ) addWordToDictionary( token );
 
       token = strtok( NULL, delim );
    }

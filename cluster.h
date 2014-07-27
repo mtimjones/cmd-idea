@@ -1,2 +1,2 @@
 
-void kmeans( ideas_t* ideas, int k );
+void kmeans( ideas_t* ideas, int k, int c );
