@@ -20,7 +20,7 @@ unsigned int isCommonWord( char *word )
 
    char *location;
 
-   location = strcasestr( commonWords, word );
+   location = (char *)strcasestr( commonWords, word );
 
    if ( location ) return 1;
 

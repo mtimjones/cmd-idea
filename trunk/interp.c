@@ -1,8 +1,10 @@
 // interp.c
 //
 
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -13,6 +15,8 @@
 #include "cluster.h"
 
 int last_identifier = 0;
+
+extern int verbose;
 
 void helpCommand( void )
 {
@@ -80,6 +84,25 @@ void searchCommand( ideas_t* ideas, char* input )
 }
 
 
+idea *createIdea( char *idea_text, char *date )
+{
+   idea* cur_idea;
+
+   cur_idea = (idea *)calloc( 1, sizeof( idea ) );
+
+   cur_idea->text = (char *)malloc( strlen( idea_text ) + 1 );
+   strncpy( cur_idea->text, idea_text, strlen( idea_text )+1 );
+
+   cur_idea->addedDate = (char *)malloc( strlen( date ) + 1 );
+   strcpy( cur_idea->addedDate, date );
+   cur_idea->addedDate[ strlen(cur_idea->addedDate)-1 ] = 0;
+
+   cur_idea->BoWVector = (unsigned char *)0;
+
+   return cur_idea;
+}
+
+
 void addCommand( ideas_t* ideas, char *input )
 {
    char *idea_text = &input[3];
@@ -92,25 +115,16 @@ void addCommand( ideas_t* ideas, char *input )
       char* date;
       time_t rawtime;
 
-      cur_idea = (idea *)calloc( 1, sizeof( idea ) );
+      time( &rawtime );
+      date = ctime( &rawtime );
 
-      cur_idea->text = (char *)malloc( strlen( idea_text ) + 1 );
-      strncpy( cur_idea->text, idea_text, strlen( idea_text )+1 );
+      cur_idea = createIdea( idea_text, date );
+      assert( cur_idea );
 
       cur_idea->identifier = last_identifier++;
 
-      time( &rawtime );
-      date = ctime( &rawtime );
-      cur_idea->addedDate = (char *)malloc( strlen( date ) + 1 );
-      strcpy( cur_idea->addedDate, date );
-      cur_idea->addedDate[ strlen(cur_idea->addedDate)-1 ] = 0;
-
-      cur_idea->BoWVector = (unsigned char *)0;
-
       listAdd( ideas, (link_t *)cur_idea );
    }
-
-   printf("\n");
 
    return;
 }
@@ -208,7 +222,7 @@ void organizeCommand( ideas_t* ideas, char* input )
    /* Allocate and populate the BoW vectors. */
    listIterate( ideas, createBoWVector );
 
-printf("k = %d\n", k );
+   if (verbose) printf("k = %d\n", k );
 
    /* Cluster the ideas */
    kmeans( ideas, k, dictionarySize() );
@@ -219,7 +233,8 @@ printf("k = %d\n", k );
 
 void execInterpreter( ideas_t* ideas )
 {
-   char *input, shell_prompt[6];
+   char *input; 
+   char shell_prompt[6];
    int  running = 1;
 
    snprintf( shell_prompt, sizeof(shell_prompt), "idea> " );
@@ -251,8 +266,7 @@ void execInterpreter( ideas_t* ideas )
       }
       else if ( !strncmp( input, "organize", 8 ) )
       {
-         if ( dictionarySize() < 5) printf("Sample too small.\n\n");
-         else organizeCommand( ideas, input );
+         organizeCommand( ideas, input );
       }
       else if ( !strncmp( input, "search", 5 ) )
       {
