@@ -10,6 +10,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include "ideadb.h"
+#include "eyeoh.h"
 
 int verbose = 0;
 int term_width;
@@ -73,11 +74,11 @@ int main ( int argc, char* argv[] )
    listInit( &ideas );
 
    // Try to read the idea database into the list
-//   readDatabase( &ideas, db_dir );
+   readDatabase( &ideas, db_dir );
 
    execInterpreter( &ideas );
 
-//   storeDatabase( &ideas, db_dir );
+   storeDatabase( &ideas, db_dir );
 
    return 0;
 }

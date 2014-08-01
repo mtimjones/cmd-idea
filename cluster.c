@@ -50,6 +50,21 @@ void assignRandomIdeaToCluster( ideas_t* ideas, int k, int c )
 }
 
 
+void initIdeaClusters( ideas_t* ideas )
+{
+   link_t* link = (link_t *)ideas->first;
+
+   while ( link )
+   {
+      ((idea *)link)->cluster = -1;
+
+      link = link->next;
+   }
+
+   return;
+}
+
+
 void kmeans_cluster_init( ideas_t* ideas, int k, int c )
 {
    int i;
@@ -61,6 +76,8 @@ void kmeans_cluster_init( ideas_t* ideas, int k, int c )
       centroids[i] = (double *)calloc( 1, (c*sizeof(double)) );
       centroid_counts[i] = 0;
    }
+
+   initIdeaClusters( ideas );
 
    for ( i = 0 ; i < k ; i++ )
    {
