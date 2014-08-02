@@ -124,6 +124,8 @@ void addCommand( ideas_t* ideas, char *input )
       cur_idea->identifier = last_identifier++;
 
       listAdd( ideas, (link_t *)cur_idea );
+
+      printf( "Added idea %d.\n", cur_idea->identifier );
    }
 
    return;
@@ -231,6 +233,74 @@ void organizeCommand( ideas_t* ideas, char* input )
 }
 
 
+void similarCommand( ideas_t* ideas, char* input )
+{
+   int id, i, cluster = -1;
+   link_t* link;
+   const int max_entries = 50;
+   int cur_index;
+   idea** similar;
+
+   if ( sscanf( input, "similar %d", &id ) != 1 )
+   {
+      printf("Must provide an identifer.\n");
+      return;
+   }
+
+   // Find the cluster for the given identifier
+   link = ideas->first;
+   while (link)
+   {
+      if ( ((idea *)link)->identifier == id )
+      {
+         cluster = ((idea*)link)->cluster;
+         break;
+      }
+
+      link = link->next;
+   }
+
+   if ( cluster == -1 )
+   {
+      printf( "Identifier not found.\n" );
+      return;
+   }
+
+   // Grab the first 'n' in the cluster 
+   similar = calloc( max_entries, sizeof( idea* ) );
+   cur_index = 0;
+
+   link = ideas->first;
+   while (link)
+   {
+      if ( ((idea *)link)->cluster == cluster )
+      {
+         if ( ((idea *)link)->identifier != id )
+         {
+            similar[cur_index++] = (idea *)link;
+         }
+      }
+
+      link = link->next;
+   }
+
+   if ( cur_index == 0 )
+   {
+      printf("No similar ideas found.\n");
+   }
+   else 
+   {
+      i = getRand( cur_index );
+      printf( "%3d: (%2d) %s\n",
+               similar[i]->identifier, similar[i]->cluster, similar[i]->text );
+   }
+
+   free( similar );
+
+   return;
+}
+
+
 void execInterpreter( ideas_t* ideas )
 {
    char *input; 
@@ -271,6 +341,10 @@ void execInterpreter( ideas_t* ideas )
       else if ( !strncmp( input, "search", 5 ) )
       {
          searchCommand( ideas, input );
+      }
+      else if ( !strncmp( input, "similar", 7 ) )
+      {
+         similarCommand( ideas, input );
       }
       else if ( !strncmp( input, "exit", 4 ) )
       {
