@@ -1,0 +1,1 @@
+Simple command line tool to store, organize, and review ideas over time.
